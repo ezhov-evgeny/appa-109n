@@ -22,6 +22,8 @@ TEST_DATA = {
                                                                                       'val': '0.0'},
     b'\x55\x55\x00\x0e\x04\x01\x00\x80\xd0\x07\x00\x51\x01\x00\x00\x00\x00\x00\x66': {'mode': 'Continuity Test', 'range': '200 Ohm', 'unit': 'Ohm',
                                                                                       'val': VALUE_INFINITE},
+    b'\x55\x55\x00\x0e\x01\x00\x00\x02\xab\x4c\x00\x0a\x01\xf4\x01\x00\x79\x02\x2d': {'mode': 'Voltage AC', 'range': '200 V', 'unit': 'V',
+                                                                                      'val': '196.27', 'sub_val': '50.0', 'sub_unit': 'Hz'},
 }
 
 
@@ -36,7 +38,9 @@ class TestStateParser(unittest.TestCase):
         self.assertEqual(b'\x08\x09\x10', d.main_value)
         self.assertEqual('00010001', d.main_state)
         self.assertEqual('12', d.main_function)
-        self.assertEqual('1314151617', d.sub)
+        self.assertEqual(b'\x13\x14\x15', d.sub_value)
+        self.assertEqual('00010110', d.sub_state)
+        self.assertEqual('17', d.sub_function)
         self.assertEqual('18', d.checksum)
 
     def test_parse_data(self):
@@ -48,3 +52,6 @@ class TestStateParser(unittest.TestCase):
             self.assertEqual(expected['range'], data.range.name)
             self.assertEqual(expected['unit'], data.unit)
             self.assertEqual(expected['val'], data.value)
+            if 'sub_val' in expected:
+                self.assertEqual(expected['sub_unit'], data.sub_unit)
+                self.assertEqual(expected['sub_val'], data.sub_value)

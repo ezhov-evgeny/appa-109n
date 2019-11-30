@@ -228,7 +228,9 @@ class DataFormat:
         self.main_value = data[8:11]
         self.main_state = bin(int(data[11:12].hex(), 16))[2:].zfill(8)
         self.main_function = data[12:13].hex()
-        self.sub = data[13:18].hex()
+        self.sub_value = data[13:16]
+        self.sub_state = bin(int(data[16:17].hex(), 16))[2:].zfill(8)
+        self.sub_function = data[17:18].hex()
         self.checksum = data[-1:].hex()
 
     @staticmethod
@@ -247,8 +249,10 @@ class DataParser:
         mode = self._parse_mode(raw)
         range = mode.get_range(raw.range)
         value = self._parse_value(raw.main_value, raw.main_state, range)
-        unit = self._parse_unit(raw)
-        return AppaData(raw, mode, range, value, unit)
+        unit = self._parse_unit(raw.main_state)
+        sub_value = self._parse_value(raw.sub_value, raw.sub_state, None)
+        sub_unit = self._parse_unit(raw.sub_state)
+        return AppaData(raw, mode, range, value, unit, sub_value, sub_unit)
 
     def _parse_mode(self, raw: DataFormat):
         return self.dmm_modes[raw.mode] if raw.mode and raw.mode in self.dmm_modes else None
@@ -268,8 +272,8 @@ class DataParser:
         return result
 
     @staticmethod
-    def _parse_unit(raw):
-        unit_code = int(raw.main_state[:-3], 2)
+    def _parse_unit(raw_state):
+        unit_code = int(raw_state[:-3], 2)
         return UNITS.get(unit_code)
 
     def _init_modes(self):
@@ -290,12 +294,14 @@ class DataParser:
 
 
 class AppaData:
-    def __init__(self, raw: DataFormat, mode: Mode, range: Range, value: str, unit: str):
+    def __init__(self, raw: DataFormat, mode: Mode, range: Range, value: str, unit: str, sub_value: str = None, sub_unit: str = None):
         self.raw = raw
         self.mode = mode
         self.range = range
         self.value = value
         self.unit = unit
+        self.sub_value = sub_value
+        self.sub_unit = sub_unit
 
     def get_raw(self):
         return self.raw.raw
@@ -306,4 +312,6 @@ class AppaData:
                + ", " + self.range.__repr__() \
                + ", value: " + self.value.__repr__() \
                + ", unit: " + self.unit.__repr__() \
+               + ((", sub value: " + self.sub_value.__repr__()) if self.sub_value else '') \
+               + ((", sub unit: " + self.sub_unit.__repr__()) if self.sub_unit else '') \
                + ']'
