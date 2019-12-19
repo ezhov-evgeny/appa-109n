@@ -1,0 +1,20 @@
+language: python
+dist: xenial
+
+addons:
+  sonarcloud:
+    organization: "ezhov-evgeny"
+    token:
+      secure: 9226d49dfe90c51c7c1e0144b4c6a3f304774f12
+
+python:
+  - "3.7"
+  - "3.8"
+
+install:
+  - python setup.py develop
+  - pip install coverage
+script:
+  - coverage run setup.py test
+  - coverage xml
+  - sonar-scanner
