@@ -196,6 +196,14 @@ UNITS = {
 VALUE_INFINITE = 'Infinite'
 
 
+class MalformedDataFormat(Exception):
+    def __init__(self, data):
+        self.message = 'Received malformed data: \'{}\''.format(data)
+
+    def __repr__(self):
+        return 'MalformedDataFormat: {}'.format(self.message)
+
+
 class Mode:
     def __init__(self, raw_code: str, name: str, ranges: dict):
         self.raw_code = raw_code
@@ -223,6 +231,8 @@ class Range:
 class DataFormat:
     def __init__(self, data: bytes):
         self.raw = self.convert_to_escaped_hex_string(data)
+        if len(data) < 19:
+            raise MalformedDataFormat(data)
         self.mode = data[4:6].hex()
         self.range = data[7:8].hex()
         self.main_value = data[8:11]
@@ -245,14 +255,18 @@ class DataParser:
         self._init_modes()
 
     def parse(self, data: bytes):
-        raw = DataFormat(data)
-        mode = self._parse_mode(raw)
-        range = mode.get_range(raw.range)
-        value = self._parse_value(raw.main_value, raw.main_state, range)
-        unit = self._parse_unit(raw.main_state)
-        sub_value = self._parse_value(raw.sub_value, raw.sub_state, None)
-        sub_unit = self._parse_unit(raw.sub_state)
-        return AppaData(raw, mode, range, value, unit, sub_value, sub_unit)
+        try:
+            raw = DataFormat(data)
+            mode = self._parse_mode(raw)
+            range = mode.get_range(raw.range)
+            value = self._parse_value(raw.main_value, raw.main_state, range)
+            unit = self._parse_unit(raw.main_state)
+            sub_value = self._parse_value(raw.sub_value, raw.sub_state, None)
+            sub_unit = self._parse_unit(raw.sub_state)
+            return AppaData(raw, mode, range, value, unit, sub_value, sub_unit)
+        except MalformedDataFormat as e:
+            print(e.message)
+            return None
 
     def _parse_mode(self, raw: DataFormat):
         return self.dmm_modes[raw.mode] if raw.mode and raw.mode in self.dmm_modes else None

@@ -1,6 +1,8 @@
 import unittest
+from io import StringIO
+from unittest import mock
 
-from appa.protocol import DataFormat, DataParser, VALUE_INFINITE
+from appa.protocol import DataFormat, DataParser, VALUE_INFINITE, MalformedDataFormat
 
 TEST_DATA = {
     b'\x55\x55\x00\x0e\x03\x00\x00\x05\x5b\x14\x00\x63\x01\x00\x00\x00\x00\x00\x93': {'mode': 'Resistance', 'range': '20 MOhm', 'unit': 'MOhm', 'val': '5.211'},
@@ -55,3 +57,18 @@ class TestStateParser(unittest.TestCase):
             if 'sub_val' in expected:
                 self.assertEqual(expected['sub_unit'], data.sub_unit)
                 self.assertEqual(expected['sub_val'], data.sub_value)
+
+    @mock.patch('sys.stdout', new_callable=StringIO)
+    def test_malformed(self, mock_stdout):
+        self.assertIsNone(self.parser.parse(b'123'))
+        self.assertEqual("Received malformed data: 'b'123''\n", mock_stdout.getvalue())
+
+
+class TestDataFormat(unittest.TestCase):
+    def test_malformed(self):
+        with self.assertRaises(MalformedDataFormat):
+            try:
+                DataFormat(b'123')
+            except MalformedDataFormat as e:
+                self.assertEqual("MalformedDataFormat: Received malformed data: 'b'123''", e.__repr__())
+                raise e
