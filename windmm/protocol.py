@@ -263,7 +263,7 @@ class DataParser:
             unit = self._parse_unit(raw.main_state)
             sub_value = self._parse_value(raw.sub_value, raw.sub_state, None)
             sub_unit = self._parse_unit(raw.sub_state)
-            return AppaData(raw, mode, range, value, unit, sub_value, sub_unit)
+            return WindmmData(raw, mode, range, value, unit, sub_value, sub_unit)
         except MalformedDataFormat as e:
             print(e.message)
             return None
@@ -307,7 +307,7 @@ class DataParser:
         return ranges
 
 
-class AppaData:
+class WindmmData:
     def __init__(self, raw: DataFormat, mode: Mode, range: Range, value: str, unit: str, sub_value: str = None, sub_unit: str = None):
         self.raw = raw
         self.mode = mode

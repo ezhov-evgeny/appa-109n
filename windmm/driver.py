@@ -2,7 +2,7 @@ import time
 
 import serial
 
-from appa.protocol import REQUEST_READ_DATA_COMMAND, DataParser
+from windmm.protocol import REQUEST_READ_DATA_COMMAND, DataParser
 
 
 class AppaDriver:

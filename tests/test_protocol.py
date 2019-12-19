@@ -2,7 +2,7 @@ import unittest
 from io import StringIO
 from unittest import mock
 
-from appa.protocol import DataFormat, DataParser, VALUE_INFINITE, MalformedDataFormat
+from windmm.protocol import DataFormat, DataParser, VALUE_INFINITE, MalformedDataFormat
 
 TEST_DATA = {
     b'\x55\x55\x00\x0e\x03\x00\x00\x05\x5b\x14\x00\x63\x01\x00\x00\x00\x00\x00\x93': {'mode': 'Resistance', 'range': '20 MOhm', 'unit': 'MOhm', 'val': '5.211'},

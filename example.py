@@ -1,4 +1,4 @@
-from appa.driver import AppaDriver
+from windmm.driver import AppaDriver
 
 if __name__ == '__main__':
     driver = AppaDriver('/dev/tty.usbserial-14130')

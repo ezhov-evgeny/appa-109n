@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from appa.driver import AppaDriver
+from windmm.driver import AppaDriver
 
 
 class MyTestCase(unittest.TestCase):
@@ -37,7 +37,3 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('0.0', data.sub_value)
         self.assertEqual('None', data.sub_unit)
         self.assertEqual('\\x55\\x55\\x00\\x0e\\x01\\x01\\x00\\x00\\x2f\\x37\\x00\\x0c\\x01\\x00\\x00\\x00\\x00\\x00\\x2d', data.get_raw())
-
-
-if __name__ == '__main__':
-    unittest.main()

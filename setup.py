@@ -3,17 +3,17 @@ from setuptools import setup
 version = "0.1"
 
 setup(
-    name='appa-python',
+    name='appa-windmm-python',
     version=version,
-    packages=['appa'],
+    packages=['windmm'],
     install_requires=['pyserial'],
     test_suite='tests',
-    url='https://github.com/ezhov-evgeny/appa-109n',
+    url='https://github.com/ezhov-evgeny/appa-windmm-python',
     license='Apache License 2.0',
     author='Evgeny Ezhov',
     author_email='ezhov.evgeny@gmail.com',
     description='Python cross platform driver for multimeters APPA',
-    keywords='serial, appa, python, module, library, packet, multimeter, windmm',
+    keywords='serial, windmm, python, module, library, packet, multimeter, windmm',
     classifiers=[
         'Environment :: Console',
         'Operating System :: MacOS',
