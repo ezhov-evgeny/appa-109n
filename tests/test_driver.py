@@ -1,28 +1,28 @@
 import unittest
 from unittest import mock
 
-from windmm.driver import AppaDriver
+from windmm.driver import WinDmmDriver
 
 
 class MyTestCase(unittest.TestCase):
 
     @mock.patch("serial.Serial", create=True)
     def test_is_open(self, mock_serial):
-        driver = AppaDriver('COM1')
+        driver = WinDmmDriver('COM1')
         driver.ser.isOpen.return_value = False
         self.assertFalse(driver.is_open())
         driver.ser.isOpen.assert_called()
 
     @mock.patch("serial.Serial", create=True)
     def test_close(self, mock_serial):
-        driver = AppaDriver('COM1')
+        driver = WinDmmDriver('COM1')
         driver.close()
         driver.ser.close.assert_called()
 
     @mock.patch("serial.Serial", create=True)
     def test_read_data(self, mock_serial):
         raw_data = b'\x55\x55\x00\x0e\x01\x01\x00\x00\x2f\x37\x00\x0c\x01\x00\x00\x00\x00\x00\x2d'
-        driver = AppaDriver('COM1')
+        driver = WinDmmDriver('COM1')
         driver.ser.read.return_value = raw_data
         data = driver.read_data()
         driver.ser.write.assert_called_with(b"\x55\x55\x00\x00\xAA")

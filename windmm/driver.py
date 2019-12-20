@@ -5,7 +5,7 @@ import serial
 from windmm.protocol import REQUEST_READ_DATA_COMMAND, DataParser
 
 
-class AppaDriver:
+class WinDmmDriver:
     def __init__(self, port: str):
         self.ser = serial.Serial(
             port=port,
